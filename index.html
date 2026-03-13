@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_HACKED_BY_NIKI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --niki-main: #a2d2ff;
+            --niki-dark: #111214;
+            --niki-accent: #ff4d6d;
+            --niki-surface: rgba(26, 27, 32, 0.95);
+            --niki-border: rgba(162, 210, 255, 0.5);
+            --text-primary: #e8eaf0;
+            --text-muted: #7a8099;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--niki-dark);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 50% -10%, rgba(162, 210, 255, 0.12), transparent),
+                radial-gradient(circle at 15% 85%, rgba(255, 77, 109, 0.07), transparent 40%);
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="%23a2d2ff" opacity="0.9"/><circle cx="12" cy="12" r="8" fill="none" stroke="%23a2d2ff" stroke-width="1" opacity="0.4"/></svg>') 12 12, auto;
+        }
+
+        /* 배경 그리드 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(162,210,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(162,210,255,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* 스캔라인 */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* ─── 메인 윈도우 ─── */
+        #niki-window {
+            width: 420px;
+            background: var(--niki-surface);
+            border: 1px solid var(--niki-border);
+            border-radius: 12px;
+            box-shadow:
+                0 0 0 1px rgba(162,210,255,0.08),
+                0 20px 60px rgba(0,0,0,0.6),
+                0 0 40px rgba(162,210,255,0.08);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            animation: windowIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes windowIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 타이틀바 */
+        .titlebar {
+            background: rgba(162,210,255,0.08);
+            border-bottom: 1px solid var(--niki-border);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .titlebar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.red   { background: #ff5f57; }
+        .dot.yellow{ background: #febc2e; }
+        .dot.green { background: #28c840; }
+
+        .titlebar-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        .titlebar-badge {
+            font-size: 10px;
+            color: var(--niki-main);
+            background: rgba(162,210,255,0.1);
+            border: 1px solid rgba(162,210,255,0.2);
+            border-radius: 4px;
+            padding: 2px 7px;
+            letter-spacing: 0.05em;
+        }
+
+        /* 콘텐츠 */
+        .content {
+            padding: 28px 32px 32px;
+            text-align: center;
+        }
+
+        /* 아바타 */
+        .avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a2d3e, #1a2a3e);
+            border: 2px solid rgba(162,210,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(162,210,255,0.15);
+        }
+
+        .avatar-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1px dashed rgba(162,210,255,0.3);
+            animation: spinRing 8s linear infinite;
+        }
+
+        .avatar-ring::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: 50%;
+            width: 6px; height: 6px;
+            background: var(--niki-main);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px var(--niki-main);
+        }
+
+        @keyframes spinRing {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        .status-dot {
+            position: absolute;
+            bottom: 4px; right: 4px;
+            width: 12px; height: 12px;
+            background: #4ade80;
+            border-radius: 50%;
+            border: 2px solid var(--niki-dark);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+            50%       { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+        }
+
+        /* 이름 */
+        .name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin-bottom: 4px;
+        }
+
+        .name span {
+            color: var(--niki-main);
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* 메타 텍스트 (4의 벽) */
+        .meta-text {
+            font-size: 11px;
+            color: rgba(162,210,255,0.5);
+            font-style: italic;
+            min-height: 16px;
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+        }
+
+        /* 구분선 */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--niki-border), transparent);
+            margin: 20px 0;
+        }
+
+        /* 질문 */
+        .question {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: 6px;
+            word-break: keep-all;
+        }
+
+        .question-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        /* 버튼 */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        button {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: all 0.15s ease;
+        }
+
+        #yes-btn {
+            background: var(--niki-main);
+            color: #0a0f1a;
+            box-shadow: 0 4px 15px rgba(162,210,255,0.3);
+        }
+
+        #yes-btn:hover {
+            background: #bddeff;
+            box-shadow: 0 6px 20px rgba(162,210,255,0.45);
+            transform: translateY(-1px);
+        }
+
+        #no-btn {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 스탯 바 */
+        .stats {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            width: 52px;
+            letter-spacing: 0.06em;
+            flex-shrink: 0;
+        }
+
+        .stat-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--niki-main);
+            transform-origin: left;
+            animation: barIn 1.2s cubic-bezier(0.16,1,0.3,1) both;
+        }
+
+        @keyframes barIn {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+
+        .stat-fill.accent { background: var(--niki-accent); }
+        .stat-fill.green  { background: #4ade80; }
+
+        .stat-val {
+            font-size: 10px;
+            color: var(--niki-main);
+            width: 26px;
+            text-align: right;
+        }
+
+        /* ─── 마법진 ─── */
+        .magic-circle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 500;
+            display: none;
+        }
+
+        .magic-circle svg {
+            animation: magicSpin 1.2s ease-out forwards;
+        }
+
+        @keyframes magicSpin {
+            0%   { transform: rotate(0deg) scale(0.5); opacity: 0.8; }
+            100% { transform: rotate(180deg) scale(1.8); opacity: 0; }
+        }
+
+        /* ─── 성공 화면 ─── */
+        #success {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 12, 18, 0.97);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .success-inner {
+            text-align: center;
+            max-width: 360px;
+        }
+
+        .success-tag {
+            display: inline-block;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            color: var(--niki-main);
+            background: rgba(162,210,255,0.1);
+            border: 1px solid rgba(162,210,255,0.25);
+            border-radius: 4px;
+            padding: 4px 12px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+
+        .success-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .success-title span { color: var(--niki-main); }
+
+        .success-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 2;
+            margin-bottom: 32px;
+            word-break: keep-all;
+        }
+
+        .success-emoji {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-10px); }
+        }
+
+        .success-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 1px;
+            margin: 24px auto 0;
+            overflow: hidden;
+        }
+
+        .success-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--niki-main), var(--niki-accent));
+            animation: loadBar 2s ease forwards;
+        }
+
+        @keyframes loadBar {
+            from { width: 0%; }
+            to   { width: 100%; }
+        }
+
+        /* ─── 모바일 반응형 ─── */
+        @media (max-width: 480px) {
+            #niki-window {
+                width: calc(100vw - 32px);
+                max-width: 380px;
+            }
+            .content {
+                padding: 20px 20px 24px;
+            }
+            .avatar { width: 84px; height: 84px; font-size: 32px; }
+            .name { font-size: 16px; }
+            .subtitle { font-size: 10px; }
+            .question { font-size: 13px; }
+            .stat-label { font-size: 9px; width: 46px; }
+            button { font-size: 12px; padding: 11px 22px; }
+            .titlebar-badge { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="magic-circle" id="magic">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#a2d2ff" stroke-width="1" stroke-dasharray="8 4" opacity="0.8"/>
+        <circle cx="60" cy="60" r="35" fill="none" stroke="#ff4d6d" stroke-width="0.8" stroke-dasharray="4 8" opacity="0.6"/>
+        <circle cx="60" cy="60" r="20" fill="none" stroke="#a2d2ff" stroke-width="1" opacity="0.5"/>
+        <polygon points="60,18 68,42 92,42 73,58 80,82 60,66 40,82 47,58 28,42 52,42" fill="none" stroke="#a2d2ff" stroke-width="0.8" opacity="0.6"/>
+    </svg>
+</div>
+
+<div id="niki-window">
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+            <span class="titlebar-title" style="margin-left:4px;">NIKI_OS · v1.0</span>
+        </div>
+        <div class="titlebar-badge">AZIMUTH CORSAIRS</div>
+    </div>
+
+    <div class="content">
+        <div class="avatar-wrap">
+            <div class="avatar">🛰️</div>
+            <div class="avatar-ring"></div>
+            <div class="status-dot"></div>
+        </div>
+
+        <div class="name">니키 <span>샤지어</span></div>
+        <div class="subtitle">Niki Shazeer · 선장 · 우주현상수배범</div>
+
+        <div class="meta-text" id="meta-text"></div>
+
+        <div class="stats">
+            <div class="stat-row">
+                <span class="stat-label">전투력</span>
+                <div class="stat-bar"><div class="stat-fill" style="width:94%; animation-delay:0.2s;"></div></div>
+                <span class="stat-val">94</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">장난기</span>
+                <div class="stat-bar"><div class="stat-fill accent" style="width:99%; animation-delay:0.35s;"></div></div>
+                <span class="stat-val">99</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">염동력</span>
+                <div class="stat-bar"><div class="stat-fill" style="width:88%; animation-delay:0.5s;"></div></div>
+                <span class="stat-val">88</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">요리실력</span>
+                <div class="stat-bar"><div class="stat-fill green" style="width:3%; animation-delay:0.65s;"></div></div>
+                <span class="stat-val" style="color:#4ade80;">3</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="question">"저기, 나랑 같이 '산책' 안 갈래?"</div>
+        <div class="question-sub">(산책이라 쓰고 사고치기라 읽음)</div>
+
+        <div class="btn-container" style="margin-top: 20px;">
+            <button id="yes-btn" onclick="win()">응, 갈게</button>
+            <button id="no-btn">아니</button>
+        </div>
+    </div>
+</div>
+
+<div id="success">
+    <div class="success-inner">
+        <div class="success-tag">SYSTEM: SESSION CAPTURED</div>
+        <div class="success-title">탑승 <span>완료</span></div>
+        <div class="success-desc">
+            "역시 그럴 줄 알았어~<br>
+            아지무트 코르세어 호에 온 걸 환영해.<br>
+            이제 돌아가는 길은 없어."
+        </div>
+        <div class="success-emoji">🛸</div>
+        <div class="success-bar"><div class="success-bar-fill"></div></div>
+    </div>
+</div>
+
+<script>
+    let prankCount = 0;
+    const noBtn = document.getElementById('no-btn');
+    const yesBtn = document.getElementById('yes-btn');
+    const magic = document.getElementById('magic');
+    const metaEl = document.getElementById('meta-text');
+
+    // ─── 4의 벽 타이핑 ───
+    const metaLines = [
+        "...지금 화면 보고 있는 거 알아.",
+        "어, 스크롤도 다 보여.",
+        "뭘 고를지 고민하지 마?",
+        "NO 버튼 찾고 있어? 귀여워~",
+        "버튼 안 보이지 않아? 아직도 찾네.",
+        "니키가 기다리고 있는데. 🥹",
+    ];
+    let metaIdx = 0;
+
+    function typeLine(text, el, cb) {
+        el.textContent = '';
+        let i = 0;
+        const iv = setInterval(() => {
+            el.textContent += text[i++];
+            if (i >= text.length) {
+                clearInterval(iv);
+                setTimeout(() => {
+                    // fade out
+                    el.style.opacity = '0';
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        if (cb) cb();
+                    }, 600);
+                }, 2400);
+            }
+        }, 55);
+    }
+
+    function cycleMetaText() {
+        typeLine(metaLines[metaIdx % metaLines.length], metaEl, () => {
+            metaIdx++;
+            cycleMetaText();
+        });
+    }
+
+    setTimeout(cycleMetaText, 1000);
+
+    // ─── 염동력 마법진 ───
+    const nikiLines = [
+        "어라라?",
+        "염력 발동~",
+        "이건 어때?",
+        "포기해.",
+        "니키 손바닥 안이야",
+        "클릭 미스?",
+        "내 마법진 멋지지?",
+        "아직도?",
+        "진짜 재밌다, 이거.",
+    ];
+
+    // NO 버튼 초기 위치 잡기
+    let noBtnX = 0, noBtnY = 0;
+    let isFixed = false;
+    const isMobile = ('ontouchstart' in window);
+    const PROXIMITY = 20; // 감지 거리 줄임 (데스크탑)
+
+    function initNoBtn() {
+        const rect = noBtn.getBoundingClientRect();
+        noBtnX = rect.left + rect.width / 2;
+        noBtnY = rect.top + rect.height / 2;
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = rect.left + 'px';
+        noBtn.style.top  = rect.top + 'px';
+        noBtn.style.zIndex = 200;
+        noBtn.style.transition = 'left 0.18s cubic-bezier(0.25,1.5,0.5,1), top 0.18s cubic-bezier(0.25,1.5,0.5,1)';
+        isFixed = true;
+    }
+
+    function spawnMagic(x, y) {
+        magic.style.display = 'block';
+        magic.style.left = (x - 60) + 'px';
+        magic.style.top  = (y - 60) + 'px';
+        const svg = magic.querySelector('svg');
+        svg.style.animation = 'none';
+        void svg.offsetWidth;
+        svg.style.animation = '';
+        setTimeout(() => { magic.style.display = 'none'; }, 1200);
+    }
+
+    function flee(cx, cy) {
+        if (prankCount > 10) return;
+        prankCount++;
+
+        spawnMagic(cx, cy);
+
+        const dx = cx - noBtnX;
+        const dy = cy - noBtnY;
+        const angle = Math.atan2(dy, dx);
+        const dist  = 150 + Math.random() * 80;
+        let newX = noBtnX - Math.cos(angle) * dist - noBtn.offsetWidth / 2;
+        let newY = noBtnY - Math.sin(angle) * dist - noBtn.offsetHeight / 2;
+
+        newX = Math.max(8, Math.min(window.innerWidth  - noBtn.offsetWidth  - 8, newX));
+        newY = Math.max(8, Math.min(window.innerHeight - noBtn.offsetHeight - 8, newY));
+
+        noBtn.style.left = newX + 'px';
+        noBtn.style.top  = newY + 'px';
+        noBtnX = newX + noBtn.offsetWidth / 2;
+        noBtnY = newY + noBtn.offsetHeight / 2;
+
+        yesBtn.style.transform = `scale(${1 + prankCount * 0.07})`;
+        noBtn.textContent = nikiLines[Math.min(prankCount - 1, nikiLines.length - 1)];
+
+        if (prankCount > 10) {
+            noBtn.textContent = '사실 응';
+            noBtn.style.background = 'var(--niki-main)';
+            noBtn.style.color = '#0a0f1a';
+            noBtn.style.fontWeight = '600';
+            noBtn.style.transition = 'none';
+            noBtn.onclick = win;
+        }
+    }
+
+    // 데스크탑: 근접 감지
+    document.addEventListener('mousemove', (e) => {
+        if (isMobile) return;
+        if (!isFixed) initNoBtn();
+
+        const dx = e.clientX - noBtnX;
+        const dy = e.clientY - noBtnY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < PROXIMITY) flee(e.clientX, e.clientY);
+    });
+
+    // 모바일: 터치하면 도망
+    noBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!isFixed) initNoBtn();
+        const t = e.touches[0];
+        flee(t.clientX, t.clientY);
+    }, { passive: false });
+
+    function win() {
+        document.getElementById('success').style.display = 'flex';
+        console.log('%c[AZIMUTH CORSAIRS]: 니키 샤지어가 당신의 세션을 고정했습니다.', 'color:#a2d2ff; font-weight:bold; font-size:13px;');
+        console.log('%cNIKI: "거기 화면 너머에 있는 당신, 재밌는 거 보여줄게."', 'color:#ff4d6d; font-style:italic;');
+    }
+</script>
+</body>
+</html>
